@@ -20,6 +20,11 @@ def extrair_texto(caminho_pdf, paginas_selecionadas=None):
             else:
                 print(f"Aviso: Página {i+1} está fora do intervalo.")
                 
+        if reader.is_encrypted:
+            return "Erro: O arquivo está protegido por senha."
+        if len(reader.pages) == 0:
+            return "Erro: O PDF está vazio ou sem texto extraível."
+
         return texto_final
 
     except Exception as e:
