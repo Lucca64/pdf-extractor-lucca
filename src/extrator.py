@@ -4,6 +4,13 @@ from pypdf import PdfReader
 def extrair_texto(caminho_pdf, paginas_selecionadas=None):
     try:
         reader = PdfReader(caminho_pdf)
+        
+        # Check for errors FIRST
+        if reader.is_encrypted:
+            return "Erro: O arquivo está protegido por senha."
+        if len(reader.pages) == 0:
+            return "Erro: O PDF está vazio ou sem texto extraível."
+        
         texto_final = ""
         
         # Se não houver filtro, pega todas as páginas
@@ -19,12 +26,7 @@ def extrair_texto(caminho_pdf, paginas_selecionadas=None):
                 texto_final += reader.pages[i].extract_text()
             else:
                 print(f"Aviso: Página {i+1} está fora do intervalo.")
-                
-        if reader.is_encrypted:
-            return "Erro: O arquivo está protegido por senha."
-        if len(reader.pages) == 0:
-            return "Erro: O PDF está vazio ou sem texto extraível."
-
+        
         return texto_final
 
     except Exception as e:
@@ -38,4 +40,3 @@ if __name__ == "__main__":
     args = parser.parse_args()
     resultado = extrair_texto(args.input, args.pages)
     print(resultado)
-
